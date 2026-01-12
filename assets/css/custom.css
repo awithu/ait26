@@ -121,7 +121,18 @@ body {
 
 .category-icon {
     margin-right: 0.5rem;
-    font-size: 1rem;
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    color: #6c757d;
+}
+
+.folder-icon {
+    color: #ffa500;
+}
+
+.file-icon {
+    color: #4a90e2;
 }
 
 .category-all-link {
@@ -148,21 +159,37 @@ body {
 .category-row {
     display: flex;
     align-items: center;
-    padding: 0.5rem 1rem 0.5rem 2rem;
+    padding: 0.5rem 1rem;
     border-radius: 6px;
     transition: background-color 0.2s;
+    cursor: pointer;
 }
 
 .category-row:hover {
     background-color: #f8f9fa;
 }
 
+.parent-category > .category-row {
+    padding-left: 1rem;
+    font-weight: 500;
+}
+
+.subcategory-row {
+    padding-left: 2rem;
+    font-size: 0.9rem;
+}
+
+.level-3-row {
+    padding-left: 3rem;
+    font-size: 0.85rem;
+}
+
 .category-link {
     flex: 1;
     color: #495057;
     text-decoration: none;
-    font-size: 0.9rem;
     transition: color 0.2s;
+    margin-left: 0.5rem;
 }
 
 .category-link:hover {
@@ -170,9 +197,33 @@ body {
 }
 
 .category-count {
-    color: #6c757d;
+    color: #adb5bd;
     font-size: 0.85rem;
-    margin-left: 0.5rem;
+    margin-left: auto;
+    margin-right: 0.5rem;
+}
+
+.toggle-icon {
+    color: #adb5bd;
+    font-size: 0.7rem;
+    margin-left: 0.25rem;
+    transition: transform 0.2s;
+    user-select: none;
+}
+
+.subcategory-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: block;
+}
+
+.subcategory-item {
+    margin: 0;
+}
+
+.level-3 {
+    margin-left: 0;
 }
 
 .sidebar-footer {

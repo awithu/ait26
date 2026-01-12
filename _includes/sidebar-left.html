@@ -14,30 +14,126 @@
         
         <div class="category-tree">
             <div class="category-header">
-                <span class="category-icon">📁</span>
+                <svg class="category-icon folder-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M2 3.5C2 2.67157 2.67157 2 3.5 2H6.58579C6.98361 2 7.36514 2.15804 7.64645 2.43934L8.35355 3.14645C8.63486 3.42776 9.01639 3.58579 9.41421 3.58579H12.5C13.3284 3.58579 14 4.25722 14 5.08579V12.5C14 13.3284 13.3284 14 12.5 14H3.5C2.67157 14 2 13.3284 2 12.5V3.5Z" fill="currentColor"/>
+                </svg>
                 <a href="{{ '/categories/' | relative_url }}" class="category-all-link">분류 전체보기</a>
                 <span class="category-count">{{ site.posts.size }}개</span>
             </div>
             
             <ul class="category-list">
-                {% assign categories = site.posts | map: 'categories' | flatten | uniq | sort %}
-                {% for category in categories %}
-                    {% assign category_posts = '' | split: '' %}
-                    {% for post in site.posts %}
-                        {% if post.categories contains category %}
-                            {% assign category_posts = category_posts | push: post %}
-                        {% endif %}
-                    {% endfor %}
-                    <li class="category-item">
-                        <div class="category-row">
-                            <span class="category-icon">📂</span>
-                            <a href="{{ '/categories/' | append: category | relative_url }}" class="category-link">{{ category }}</a>
-                            <span class="category-count">{{ category_posts.size }}개</span>
-                        </div>
-                    </li>
+                {% assign all_categories = site.posts | map: 'categories' | flatten | uniq | sort %}
+                {% assign top_level = 'IT' %}
+                {% assign it_posts = '' | split: '' %}
+                {% for post in site.posts %}
+                    {% if post.categories contains top_level %}
+                        {% assign it_posts = it_posts | push: post %}
+                    {% endif %}
                 {% endfor %}
+                
+                <li class="category-item parent-category">
+                    <div class="category-row" data-category="IT">
+                        <svg class="category-icon folder-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M2 3.5C2 2.67157 2.67157 2 3.5 2H6.58579C6.98361 2 7.36514 2.15804 7.64645 2.43934L8.35355 3.14645C8.63486 3.42776 9.01639 3.58579 9.41421 3.58579H12.5C13.3284 3.58579 14 4.25722 14 5.08579V12.5C14 13.3284 13.3284 14 12.5 14H3.5C2.67157 14 2 13.3284 2 12.5V3.5Z" fill="currentColor"/>
+                        </svg>
+                        <a href="{{ '/categories/' | append: top_level | relative_url }}" class="category-link">{{ top_level }}</a>
+                        <span class="category-count">{{ it_posts.size }}개</span>
+                        <span class="toggle-icon">▼</span>
+                    </div>
+                    
+                    <ul class="subcategory-list">
+                        {% assign subcategories = '프로그래밍 언어,개발,일반' | split: ',' %}
+                        {% for subcat in subcategories %}
+                            {% assign subcat_posts = '' | split: '' %}
+                            {% for post in site.posts %}
+                                {% if post.categories contains top_level and post.categories contains subcat %}
+                                    {% assign subcat_posts = subcat_posts | push: post %}
+                                {% endif %}
+                            {% endfor %}
+                            {% if subcat_posts.size > 0 %}
+                                <li class="category-item subcategory-item">
+                                    <div class="category-row subcategory-row" data-category="{{ subcat }}">
+                                        <svg class="category-icon folder-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M2 3.5C2 2.67157 2.67157 2 3.5 2H6.58579C6.98361 2 7.36514 2.15804 7.64645 2.43934L8.35355 3.14645C8.63486 3.42776 9.01639 3.58579 9.41421 3.58579H12.5C13.3284 3.58579 14 4.25722 14 5.08579V12.5C14 13.3284 13.3284 14 12.5 14H3.5C2.67157 14 2 13.3284 2 12.5V3.5Z" fill="currentColor"/>
+                                        </svg>
+                                        <a href="{{ '/categories/' | append: subcat | relative_url }}" class="category-link">{{ subcat }}</a>
+                                        <span class="category-count">{{ subcat_posts.size }}개</span>
+                                        <span class="toggle-icon">▼</span>
+                                    </div>
+                                    
+                                    <ul class="subcategory-list level-3">
+                                        {% if subcat == '프로그래밍 언어' %}
+                                            {% assign languages = 'C언어 강의,파이썬 강의' | split: ',' %}
+                                            {% for lang in languages %}
+                                                {% assign lang_posts = '' | split: '' %}
+                                                {% for post in site.posts %}
+                                                    {% if post.categories contains top_level and post.categories contains subcat and post.categories contains lang %}
+                                                        {% assign lang_posts = lang_posts | push: post %}
+                                                    {% endif %}
+                                                {% endfor %}
+                                                {% if lang_posts.size > 0 %}
+                                                    <li class="category-item subcategory-item level-3-item">
+                                                        <div class="category-row subcategory-row level-3-row">
+                                                            <svg class="category-icon file-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                <path d="M4 2C3.44772 2 3 2.44772 3 3V13C3 13.5523 3.44772 14 4 14H12C12.5523 14 13 13.5523 13 13V5.41421C13 5.149 12.8946 4.89464 12.7071 4.70711L9.29289 1.29289C9.10536 1.10536 8.851 1 8.58579 1H4Z" fill="currentColor"/>
+                                                            </svg>
+                                                            <a href="{{ '/categories/' | append: lang | relative_url }}" class="category-link">{{ lang }}</a>
+                                                            <span class="category-count">{{ lang_posts.size }}개</span>
+                                                        </div>
+                                                    </li>
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% elsif subcat == '개발' %}
+                                            {% assign dev_cats = '프로그래밍' | split: ',' %}
+                                            {% for dev_cat in dev_cats %}
+                                                {% assign dev_posts = '' | split: '' %}
+                                                {% for post in site.posts %}
+                                                    {% if post.categories contains top_level and post.categories contains subcat and post.categories contains dev_cat %}
+                                                        {% assign dev_posts = dev_posts | push: post %}
+                                                    {% endif %}
+                                                {% endfor %}
+                                                {% if dev_posts.size > 0 %}
+                                                    <li class="category-item subcategory-item level-3-item">
+                                                        <div class="category-row subcategory-row level-3-row">
+                                                            <svg class="category-icon file-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                <path d="M4 2C3.44772 2 3 2.44772 3 3V13C3 13.5523 3.44772 14 4 14H12C12.5523 14 13 13.5523 13 13V5.41421C13 5.149 12.8946 4.89464 12.7071 4.70711L9.29289 1.29289C9.10536 1.10536 8.851 1 8.58579 1H4Z" fill="currentColor"/>
+                                                            </svg>
+                                                            <a href="{{ '/categories/' | append: dev_cat | relative_url }}" class="category-link">{{ dev_cat }}</a>
+                                                            <span class="category-count">{{ dev_posts.size }}개</span>
+                                                        </div>
+                                                    </li>
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endif %}
+                                    </ul>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </li>
             </ul>
         </div>
+        
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleButtons = document.querySelectorAll('.category-row[data-category]');
+            toggleButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    if (e.target.tagName === 'A') return;
+                    const row = this;
+                    const subList = row.parentElement.querySelector('.subcategory-list');
+                    if (subList) {
+                        const isExpanded = subList.style.display !== 'none';
+                        subList.style.display = isExpanded ? 'none' : 'block';
+                        const toggleIcon = row.querySelector('.toggle-icon');
+                        if (toggleIcon) {
+                            toggleIcon.textContent = isExpanded ? '▶' : '▼';
+                        }
+                    }
+                });
+            });
+        });
+        </script>
         
         <div class="nav-section">
             <a href="{{ '/tags/' | relative_url }}" class="nav-link">태그</a>
