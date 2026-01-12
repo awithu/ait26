@@ -16,25 +16,12 @@ twitter: ""
 email: "your.email@example.com"
 
 # Build Settings
-# remote_theme: daattali/beautiful-jekyll  # 커스텀 레이아웃 사용으로 주석 처리
+# theme: minima  # 기본 테마 (필요시 활성화)
 plugins:
   - jekyll-feed
   - jekyll-seo-tag
 
-# Beautiful Jekyll Settings
-avatar: ""
-show-avatar: false
-theme-beautiful-jekyll-override: true
-
-# Theme customization
-theme-color: "#3d4144"
-navbar-color: "#3d4144"
-footer-color: "#3d4144"
-
-# Post settings
-show-avatar: false
-show-description: true
-show-social-icons: true
+# Custom Layout Settings (Beautiful Jekyll 관련 설정 제거)
 
 nav-links:
   - name: "홈"
