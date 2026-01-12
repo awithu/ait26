@@ -7,12 +7,41 @@
     </div>
     
     <nav class="main-navigation">
-        <ul class="nav-menu">
-            <li><a href="{{ '/' | relative_url }}" class="nav-link">홈</a></li>
-            <li><a href="{{ '/categories/' | relative_url }}" class="nav-link">카테고리</a></li>
-            <li><a href="{{ '/tags/' | relative_url }}" class="nav-link">태그</a></li>
-            <li><a href="{{ '/about/' | relative_url }}" class="nav-link">About</a></li>
-        </ul>
+        <div class="nav-section">
+            <a href="{{ '/' | relative_url }}" class="nav-link">홈</a>
+            <a href="{{ '/about/' | relative_url }}" class="nav-link">About</a>
+        </div>
+        
+        <div class="category-tree">
+            <div class="category-header">
+                <span class="category-icon">📁</span>
+                <a href="{{ '/categories/' | relative_url }}" class="category-all-link">분류 전체보기</a>
+                <span class="category-count">{{ site.posts.size }}개</span>
+            </div>
+            
+            <ul class="category-list">
+                {% assign categories = site.posts | map: 'categories' | flatten | uniq | sort %}
+                {% for category in categories %}
+                    {% assign category_posts = '' | split: '' %}
+                    {% for post in site.posts %}
+                        {% if post.categories contains category %}
+                            {% assign category_posts = category_posts | push: post %}
+                        {% endif %}
+                    {% endfor %}
+                    <li class="category-item">
+                        <div class="category-row">
+                            <span class="category-icon">📂</span>
+                            <a href="{{ '/categories/' | append: category | relative_url }}" class="category-link">{{ category }}</a>
+                            <span class="category-count">{{ category_posts.size }}개</span>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        
+        <div class="nav-section">
+            <a href="{{ '/tags/' | relative_url }}" class="nav-link">태그</a>
+        </div>
     </nav>
     
     <div class="sidebar-footer">
