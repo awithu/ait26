@@ -258,6 +258,7 @@ body {
     cursor: pointer;
     min-height: 2rem;
     gap: 0.5rem;
+    flex-wrap: nowrap;
 }
 
 .category-row:hover {
@@ -286,12 +287,9 @@ body {
     transition: color 0.2s;
     margin-left: 0.5rem;
     line-height: 1.5;
-    display: flex;
-    align-items: center;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    min-width: 0;
+    display: inline-block;
+    vertical-align: middle;
+    word-break: keep-all;
 }
 
 .category-link:hover {
@@ -305,8 +303,8 @@ body {
     margin-right: 0.5rem;
     line-height: 1.5;
     white-space: nowrap;
-    display: flex;
-    align-items: center;
+    display: inline-block;
+    vertical-align: middle;
     flex-shrink: 0;
 }
 
