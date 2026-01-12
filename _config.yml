@@ -25,6 +25,18 @@ plugins:
 # Beautiful Jekyll Settings
 avatar: ""
 show-avatar: false
+theme-beautiful-jekyll-override: true
+
+# Theme customization
+theme-color: "#3d4144"
+navbar-color: "#3d4144"
+footer-color: "#3d4144"
+
+# Post settings
+show-avatar: false
+show-description: true
+show-social-icons: true
+
 nav-links:
   - name: "홈"
     url: "/"
