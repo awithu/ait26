@@ -189,6 +189,27 @@ body {
     border-radius: 8px;
     background-color: #f8f9fa;
     font-weight: 600;
+    min-height: 2.5rem;
+}
+
+.category-all-link {
+    flex: 1;
+    color: #3d4144;
+    text-decoration: none;
+    transition: color 0.2s;
+    line-height: 1.5;
+    display: flex;
+    align-items: center;
+}
+
+.category-all-link:hover {
+    color: #007bff;
+}
+
+.category-header .category-count {
+    line-height: 1.5;
+    display: flex;
+    align-items: center;
 }
 
 .category-icon {
@@ -235,6 +256,7 @@ body {
     border-radius: 6px;
     transition: background-color 0.2s;
     cursor: pointer;
+    min-height: 2rem;
 }
 
 .category-row:hover {
@@ -262,6 +284,9 @@ body {
     text-decoration: none;
     transition: color 0.2s;
     margin-left: 0.5rem;
+    line-height: 1.5;
+    display: flex;
+    align-items: center;
 }
 
 .category-link:hover {
@@ -273,6 +298,10 @@ body {
     font-size: 0.85rem;
     margin-left: auto;
     margin-right: 0.5rem;
+    line-height: 1.5;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
 }
 
 .toggle-icon {
