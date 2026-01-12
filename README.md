@@ -2,6 +2,23 @@
 
 GitHub Pages를 사용한 Jekyll 기반 IT 기술 블로그입니다.
 
+## ⚠️ 개인정보 보호
+
+**절대 커밋하면 안 되는 정보:**
+- 실제 이메일 주소 (example.com, noreply 제외)
+- 비밀번호, API 키, 토큰
+- 전화번호, 주소 등 개인정보
+- 민감한 설정 파일 (.env, secrets.yml 등)
+
+**자동 보호 기능:**
+- Pre-commit hook이 커밋 전에 개인정보를 자동으로 검사합니다
+- 민감한 정보가 감지되면 커밋이 차단됩니다
+- `.gitignore`에 민감한 파일 패턴이 포함되어 있습니다
+
+**이메일 주소 사용 시:**
+- 실제 이메일 대신 `your.email@example.com` 사용
+- 또는 GitHub의 noreply 이메일 사용: `username@users.noreply.github.com`
+
 ## 로컬에서 실행하기
 
 1. Ruby와 Bundler 설치

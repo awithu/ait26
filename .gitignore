@@ -7,3 +7,21 @@ vendor
 Gemfile.lock
 node_modules
 
+# Personal information and sensitive files
+*.key
+*.pem
+*.p12
+*.pfx
+*.env
+.env.local
+.env.*.local
+secrets.yml
+config/secrets.yml
+credentials.json
+*.log
+
+# Personal data
+personal/
+private/
+secrets/
+
