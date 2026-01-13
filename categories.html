@@ -4,92 +4,285 @@ title: 카테고리
 permalink: /categories/
 ---
 
-<div class="categories-page">
+<div class="categories-page" id="categories-page">
     <header class="page-header">
-        <h1 class="page-title">카테고리</h1>
-        <p class="page-subtitle">주제별로 정리된 포스트를 확인하세요</p>
+        <a href="{{ '/categories/' | relative_url }}" class="back-link" id="back-link" style="display: none;">← 모든 카테고리</a>
+        <h1 class="page-title" id="page-title">카테고리</h1>
+        <p class="page-subtitle" id="page-subtitle">주제별로 정리된 포스트를 확인하세요</p>
     </header>
     
-    <div class="categories-list">
-        {% assign categories = site.posts | map: 'categories' | flatten | uniq | sort %}
-        {% for category in categories %}
-            <section class="category-section">
-                <h2 class="category-title">
-                    <a href="{{ '/categories/' | append: category | uri_escape | relative_url }}">{{ category }}</a>
-                </h2>
-                {% assign category_posts = site.posts | where_exp: "post", "post.categories contains category" %}
-                <p class="category-count">{{ category_posts.size }}개의 포스트</p>
-                <ul class="category-posts">
-                    {% for post in category_posts limit: 5 %}
-                        <li class="category-post-item">
-                            <a href="{{ post.url | relative_url }}" class="category-post-link">
-                                <span class="category-post-title">{{ post.title }}</span>
-                                <span class="category-post-date">{{ post.date | date: "%Y-%m-%d" }}</span>
-                            </a>
-                        </li>
-                    {% endfor %}
-                </ul>
-                {% if category_posts.size > 5 %}
-                    <a href="{{ '/categories/' | append: category | uri_escape | relative_url }}" class="category-more-link">더보기 →</a>
-                {% endif %}
-            </section>
-        {% endfor %}
+    <div id="categories-list-view">
+        <div class="categories-list">
+            {% assign categories = site.posts | map: 'categories' | flatten | uniq | sort %}
+            {% for category in categories %}
+                <section class="category-section">
+                    <h2 class="category-title">
+                        <a href="{{ '/categories/' | append: category | uri_escape | relative_url }}">{{ category }}</a>
+                    </h2>
+                    {% assign category_posts = site.posts | where_exp: "post", "post.categories contains category" %}
+                    <p class="category-count">{{ category_posts.size }}개의 포스트</p>
+                    <ul class="category-posts">
+                        {% for post in category_posts limit: 5 %}
+                            <li class="category-post-item">
+                                <a href="{{ post.url | relative_url }}" class="category-post-link">
+                                    <span class="category-post-title">{{ post.title }}</span>
+                                    <span class="category-post-date">{{ post.date | date: "%Y-%m-%d" }}</span>
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    {% if category_posts.size > 5 %}
+                        <a href="{{ '/categories/' | append: category | uri_escape | relative_url }}" class="category-more-link">더보기 →</a>
+                    {% endif %}
+                </section>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <div id="category-posts-view" style="display: none;">
+        <p class="category-count" id="category-count"></p>
+        <div class="posts-list" id="posts-list"></div>
     </div>
 </div>
 
+<!-- 카테고리별 포스트 데이터 (숨김) -->
+<script type="application/json" id="categories-data">
+{
+    {% assign all_categories = site.posts | map: 'categories' | flatten | uniq | sort %}
+    {% for category in all_categories %}
+    "{{ category | escape }}": [
+        {% assign cat_posts = site.posts | where_exp: "post", "post.categories contains category" | sort: 'date' | reverse %}
+        {% for post in cat_posts %}
+        {
+            "title": {{ post.title | jsonify }},
+            "url": {{ post.url | relative_url | jsonify }},
+            "date": "{{ post.date | date: "%Y년 %m월 %d일" }}",
+            "description": {{ post.description | default: "" | jsonify }},
+            "categories": {{ post.categories | jsonify }},
+            "tags": {{ post.tags | jsonify }}
+        }{% unless forloop.last %},{% endunless %}
+        {% endfor %}
+    ]{% unless forloop.last %},{% endunless %}
+    {% endfor %}
+}
+</script>
+
 <script>
-// 카테고리 링크 클릭 시 필터링
 document.addEventListener('DOMContentLoaded', function() {
+    // 카테고리 데이터 로드
+    const categoriesData = JSON.parse(document.getElementById('categories-data').textContent);
+    const baseUrl = '{{ site.baseurl }}';
+
+    console.log('카테고리 데이터 로드됨:', categoriesData);
+    console.log('현재 URL:', window.location.href);
+    console.log('현재 pathname:', window.location.pathname);
+    console.log('현재 search:', window.location.search);
+
+    // URL에서 카테고리 추출 (경로 또는 쿼리 파라미터)
+    let categoryName = null;
+    
+    // 1. 쿼리 파라미터 확인 (?category=...)
+    const urlParams = new URLSearchParams(window.location.search);
+    const categoryParam = urlParams.get('category');
+    console.log('카테고리 파라미터:', categoryParam);
+    if (categoryParam) {
+        // URL 파라미터를 경로로 변환하여 리다이렉트
+        try {
+            let decoded = categoryParam;
+
+            // %25로 시작하는 경우 (이중 인코딩)를 먼저 처리
+            if (categoryParam.includes('%25')) {
+                console.log('이중 인코딩 감지됨, %25 -> % 변환');
+                decoded = categoryParam.replace(/%25/g, '%');
+                console.log('변환 후:', decoded);
+            }
+
+            // 최대 3번까지 디코딩 시도
+            for (let i = 0; i < 3; i++) {
+                const prev = decoded;
+                console.log(`디코딩 ${i+1}회차:`, decoded);
+                decoded = decodeURIComponent(decoded);
+                if (prev === decoded) break;
+            }
+
+            console.log('최종 디코딩 결과:', decoded);
+
+            // 성공적으로 디코딩되었으면 경로로 리다이렉트
+            if (decoded && decoded !== categoryParam) {
+                const redirectUrl = '{{ "/categories/" | relative_url }}' + encodeURIComponent(decoded) + '/';
+                console.log('리다이렉트 URL:', redirectUrl);
+                window.location.href = redirectUrl;
+                return; // 리다이렉트 후 함수 종료
+            }
+
+            categoryName = decoded;
+        } catch (e) {
+            console.log('디코딩 오류:', e);
+            categoryName = categoryParam;
+        }
+    }
+    
+    // 2. 경로에서 카테고리 추출 (/categories/C언어 강의/)
+    if (!categoryName) {
+        const path = window.location.pathname;
+        const basePath = '{{ "/categories/" | relative_url }}';
+        console.log('경로 확인:', path, '기준 경로:', basePath);
+        if (path !== basePath && path.startsWith(basePath)) {
+            const categoryPath = path.replace(basePath, '').replace(/\/$/, '');
+            console.log('카테고리 경로:', categoryPath);
+            if (categoryPath) {
+                try {
+                    categoryName = decodeURIComponent(categoryPath);
+                    console.log('경로에서 추출한 카테고리:', categoryName);
+                } catch (e) {
+                    console.log('경로 디코딩 오류:', e);
+                    categoryName = categoryPath;
+                }
+            }
+        }
+    }
+    
+    console.log('찾은 카테고리 이름:', categoryName);
+    console.log('사용 가능한 카테고리들:', Object.keys(categoriesData));
+
+    // 카테고리 이름으로 데이터 찾기 (정확한 매칭 또는 부분 매칭)
+    if (categoryName) {
+        console.log('카테고리 찾기 시작...');
+
+        // 정확한 매칭 시도
+        if (categoriesData[categoryName]) {
+            console.log('정확한 매칭 발견:', categoryName);
+            showCategoryPosts(categoryName, categoriesData[categoryName]);
+            return;
+        }
+
+        // 부분 매칭 시도 (공백 처리 등)
+        for (const key in categoriesData) {
+            if (key === categoryName || decodeURIComponent(encodeURIComponent(key)) === categoryName) {
+                console.log('부분 매칭 발견:', key, '->', categoryName);
+                showCategoryPosts(key, categoriesData[key]);
+                return;
+            }
+        }
+
+        // 마지막으로 모든 키를 확인하여 유사한 것 찾기
+        for (const key in categoriesData) {
+            if (key.replace(/\s+/g, ' ') === categoryName.replace(/\s+/g, ' ')) {
+                console.log('유사 매칭 발견:', key, '->', categoryName);
+                showCategoryPosts(key, categoriesData[key]);
+                return;
+            }
+        }
+
+        console.log('카테고리를 찾을 수 없음:', categoryName);
+    } else {
+        console.log('카테고리 이름이 없습니다.');
+    }
+    
+    // 카테고리 링크 클릭 처리 - 기본 동작 허용 (JavaScript에서 URL 처리)
     const categoryLinks = document.querySelectorAll('.category-title a, .category-more-link');
     categoryLinks.forEach(link => {
         link.addEventListener('click', function(e) {
             const href = this.getAttribute('href');
-            if (href && href.includes('/categories/')) {
-                const category = href.split('/categories/')[1].replace('/', '');
-                // URL 파라미터로 카테고리 전달
-                e.preventDefault();
-                window.location.href = '{{ "/categories/" | relative_url }}?category=' + encodeURIComponent(category);
-            }
+            console.log('카테고리 링크 클릭됨:', href);
+
+            // 기본적으로 링크의 기본 동작을 허용
+            // JavaScript에서는 페이지 로드 시 URL을 확인해서 처리
         });
     });
     
-    // URL 파라미터에서 카테고리 읽기
-    const urlParams = new URLSearchParams(window.location.search);
-    const selectedCategory = urlParams.get('category');
-    if (selectedCategory) {
-        // 카테고리별 포스트만 표시
-        filterByCategory(selectedCategory);
-    }
-});
-
-function filterByCategory(category) {
-    // 모든 카테고리 섹션 숨기기
-    const sections = document.querySelectorAll('.category-section');
-    sections.forEach(section => {
-        const sectionCategory = section.querySelector('.category-title a').textContent.trim();
-        if (sectionCategory === category) {
-            section.style.display = 'block';
+    // 브라우저 뒤로가기/앞으로가기 처리
+    window.addEventListener('popstate', function(e) {
+        if (e.state && e.state.category && categoriesData[e.state.category]) {
+            showCategoryPosts(e.state.category, categoriesData[e.state.category]);
         } else {
-            section.style.display = 'none';
+            // URL을 다시 확인
+            const urlParams = new URLSearchParams(window.location.search);
+            const categoryParam = urlParams.get('category');
+            if (categoryParam) {
+                try {
+                    let decoded = categoryParam;
+                    for (let i = 0; i < 3; i++) {
+                        const prev = decoded;
+                        decoded = decodeURIComponent(decoded);
+                        if (prev === decoded) break;
+                    }
+                    if (categoriesData[decoded]) {
+                        showCategoryPosts(decoded, categoriesData[decoded]);
+                        return;
+                    }
+                } catch (err) {
+                    // 무시
+                }
+            }
+            showAllCategories();
         }
     });
-    
-    // 제목 업데이트
-    const pageTitle = document.querySelector('.page-title');
-    if (pageTitle) {
-        pageTitle.textContent = category;
-    }
-    
-    // 뒤로가기 버튼 추가
-    const pageHeader = document.querySelector('.page-header');
-    if (pageHeader && !document.querySelector('.back-to-categories')) {
-        const backLink = document.createElement('a');
-        backLink.href = '{{ "/categories/" | relative_url }}';
-        backLink.className = 'back-to-categories';
-        backLink.textContent = '← 모든 카테고리';
-        backLink.style.cssText = 'display: inline-block; margin-bottom: 1rem; color: #007bff; text-decoration: none;';
-        pageHeader.insertBefore(backLink, pageTitle);
-    }
+});
+
+function showCategoryPosts(categoryName, posts) {
+    console.log('showCategoryPosts 호출됨:', categoryName, posts.length + '개의 포스트');
+
+    // UI 업데이트
+    document.getElementById('categories-list-view').style.display = 'none';
+    document.getElementById('category-posts-view').style.display = 'block';
+    document.getElementById('back-link').style.display = 'inline-block';
+    document.getElementById('page-title').textContent = categoryName;
+    document.getElementById('page-subtitle').textContent = categoryName + ' 카테고리의 모든 포스트';
+    document.getElementById('category-count').textContent = '총 ' + posts.length + '개의 포스트';
+
+    // 포스트 리스트 생성
+    const postsList = document.getElementById('posts-list');
+    postsList.innerHTML = '';
+
+    console.log('포스트 렌더링 시작...');
+    posts.forEach((post, index) => {
+        console.log(`포스트 ${index + 1}:`, post.title);
+        const article = document.createElement('article');
+        article.className = 'post-card';
+        
+        let categoriesHtml = '';
+        if (post.categories && post.categories.length > 0) {
+            categoriesHtml = '<div class="post-card-categories">';
+            post.categories.forEach(cat => {
+                const catUrl = '{{ "/categories/" | relative_url }}' + encodeURIComponent(cat);
+                categoriesHtml += '<a href="' + catUrl + '" class="category-badge">' + cat + '</a>';
+            });
+            categoriesHtml += '</div>';
+        }
+        
+        let tagsHtml = '';
+        if (post.tags && post.tags.length > 0) {
+            tagsHtml = '<div class="post-card-tags">';
+            post.tags.forEach(tag => {
+                const tagUrl = '{{ "/tags/" | relative_url }}' + encodeURIComponent(tag);
+                tagsHtml += '<a href="' + tagUrl + '" class="tag-badge">' + tag + '</a>';
+            });
+            tagsHtml += '</div>';
+        }
+        
+        article.innerHTML = `
+            <a href="${post.url}" class="post-card-link">
+                <h2 class="post-card-title">${post.title}</h2>
+            </a>
+            <div class="post-card-meta">
+                <time datetime="${post.date}" class="post-card-date">${post.date}</time>
+                ${categoriesHtml}
+                ${tagsHtml}
+            </div>
+            ${post.description ? '<p class="post-card-description">' + post.description + '</p>' : ''}
+        `;
+        
+        postsList.appendChild(article);
+    });
+}
+
+function showAllCategories() {
+    document.getElementById('categories-list-view').style.display = 'block';
+    document.getElementById('category-posts-view').style.display = 'none';
+    document.getElementById('back-link').style.display = 'none';
+    document.getElementById('page-title').textContent = '카테고리';
+    document.getElementById('page-subtitle').textContent = '주제별로 정리된 포스트를 확인하세요';
 }
 </script>
 
