@@ -10,23 +10,18 @@ permalink: /tags/
         <p class="page-subtitle">태그별로 정리된 포스트를 확인하세요</p>
     </header>
 
-    <div class="tags-simple-list">
-        <h3>주요 태그들</h3>
-        <div class="tag-buttons">
-            <a href="#algorithm" class="tag-btn">알고리즘</a>
-            <a href="#python" class="tag-btn">파이썬</a>
-            <a href="#c-language" class="tag-btn">C언어</a>
-            <a href="#english" class="tag-btn">영어</a>
-            <a href="#grammar" class="tag-btn">문법</a>
-        </div>
-    </div>
-
-    <div class="tag-sections">
-        <section id="algorithm" class="tag-section">
-            <h3>알고리즘 태그 포스트</h3>
-            <div class="posts-list">
-                {% for post in site.posts %}
-                    {% if post.tags contains "알고리즘" %}
+    <div class="tags-container">
+        {% assign sorted_tags = site.tags | sort %}
+        {% for tag in sorted_tags %}
+            {% assign tag_name = tag[0] %}
+            {% assign tag_posts = tag[1] %}
+            <section class="tag-section">
+                <h3 class="tag-title">
+                    <span class="tag-name">{{ tag_name }}</span>
+                    <span class="tag-count">{{ tag_posts.size }}개의 포스트</span>
+                </h3>
+                <div class="posts-list">
+                    {% for post in tag_posts %}
                         <article class="post-card">
                             <a href="{{ post.url | relative_url }}" class="post-card-link">
                                 <h4 class="post-card-title">{{ post.title }}</h4>
@@ -35,132 +30,21 @@ permalink: /tags/
                                 <time datetime="{{ post.date | date: '%Y-%m-%d' }}" class="post-card-date">
                                     {{ post.date | date: "%Y년 %m월 %d일" }}
                                 </time>
+                                {% if post.categories %}
+                                    <span class="post-category">{{ post.categories[0] }}</span>
+                                {% endif %}
                             </div>
                         </article>
-                    {% endif %}
-                {% endfor %}
-            </div>
-        </section>
-
-        <section id="python" class="tag-section">
-            <h3>파이썬 태그 포스트</h3>
-            <div class="posts-list">
-                {% for post in site.posts %}
-                    {% if post.tags contains "파이썬" %}
-                        <article class="post-card">
-                            <a href="{{ post.url | relative_url }}" class="post-card-link">
-                                <h4 class="post-card-title">{{ post.title }}</h4>
-                            </a>
-                            <div class="post-card-meta">
-                                <time datetime="{{ post.date | date: '%Y-%m-%d' }}" class="post-card-date">
-                                    {{ post.date | date: "%Y년 %m월 %d일" }}
-                                </time>
-                            </div>
-                        </article>
-                    {% endif %}
-                {% endfor %}
-            </div>
-        </section>
-
-        <section id="c-language" class="tag-section">
-            <h3>C언어 태그 포스트</h3>
-            <div class="posts-list">
-                {% for post in site.posts %}
-                    {% if post.tags contains "C언어" %}
-                        <article class="post-card">
-                            <a href="{{ post.url | relative_url }}" class="post-card-link">
-                                <h4 class="post-card-title">{{ post.title }}</h4>
-                            </a>
-                            <div class="post-card-meta">
-                                <time datetime="{{ post.date | date: '%Y-%m-%d' }}" class="post-card-date">
-                                    {{ post.date | date: "%Y년 %m월 %d일" }}
-                                </time>
-                            </div>
-                        </article>
-                    {% endif %}
-                {% endfor %}
-            </div>
-        </section>
-
-        <section id="english" class="tag-section">
-            <h3>영어 태그 포스트</h3>
-            <div class="posts-list">
-                {% for post in site.posts %}
-                    {% if post.tags contains "영어" %}
-                        <article class="post-card">
-                            <a href="{{ post.url | relative_url }}" class="post-card-link">
-                                <h4 class="post-card-title">{{ post.title }}</h4>
-                            </a>
-                            <div class="post-card-meta">
-                                <time datetime="{{ post.date | date: '%Y-%m-%d' }}" class="post-card-date">
-                                    {{ post.date | date: "%Y년 %m월 %d일" }}
-                                </time>
-                            </div>
-                        </article>
-                    {% endif %}
-                {% endfor %}
-            </div>
-        </section>
-
-        <section id="grammar" class="tag-section">
-            <h3>문법 태그 포스트</h3>
-            <div class="posts-list">
-                {% for post in site.posts %}
-                    {% if post.tags contains "문법" %}
-                        <article class="post-card">
-                            <a href="{{ post.url | relative_url }}" class="post-card-link">
-                                <h4 class="post-card-title">{{ post.title }}</h4>
-                            </a>
-                            <div class="post-card-meta">
-                                <time datetime="{{ post.date | date: '%Y-%m-%d' }}" class="post-card-date">
-                                    {{ post.date | date: "%Y년 %m월 %d일" }}
-                                </time>
-                            </div>
-                        </article>
-                    {% endif %}
-                {% endfor %}
-            </div>
-        </section>
+                    {% endfor %}
+                </div>
+            </section>
+        {% endfor %}
     </div>
 </div>
 
 <style>
-.tags-simple-list {
-    text-align: center;
-    margin-bottom: 3rem;
-}
-
-.tags-simple-list h3 {
-    color: #3d4144;
-    margin-bottom: 1.5rem;
-}
-
-.tag-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    justify-content: center;
-}
-
-.tag-btn {
-    display: inline-block;
-    padding: 0.75rem 1.5rem;
-    background-color: #007bff;
-    color: white;
-    text-decoration: none;
-    border-radius: 25px;
-    transition: all 0.2s;
-    font-weight: 500;
-}
-
-.tag-btn:hover {
-    background-color: #0056b3;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
-.tag-sections {
-    max-width: 800px;
+.tags-container {
+    max-width: 1000px;
     margin: 0 auto;
 }
 
@@ -172,11 +56,27 @@ permalink: /tags/
     border-left: 4px solid #007bff;
 }
 
-.tag-section h3 {
-    color: #3d4144;
+.tag-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 1.5rem;
     padding-bottom: 0.5rem;
     border-bottom: 2px solid #007bff;
+}
+
+.tag-name {
+    color: #3d4144;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.tag-count {
+    color: #6c757d;
+    font-size: 0.9rem;
+    background: #e9ecef;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
 }
 
 .posts-list {
@@ -186,27 +86,31 @@ permalink: /tags/
 }
 
 .post-card {
-    padding: 1rem;
+    padding: 1.25rem;
     background: white;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     transition: box-shadow 0.2s;
+    border: 1px solid #e9ecef;
 }
 
 .post-card:hover {
     box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    transform: translateY(-1px);
 }
 
 .post-card-link {
     text-decoration: none;
     color: inherit;
+    display: block;
 }
 
 .post-card-title {
-    margin: 0 0 0.5rem 0;
+    margin: 0 0 0.75rem 0;
     color: #007bff;
     font-size: 1.1rem;
     font-weight: 600;
+    line-height: 1.4;
 }
 
 .post-card-title:hover {
@@ -214,8 +118,43 @@ permalink: /tags/
 }
 
 .post-card-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     font-size: 0.9rem;
     color: #6c757d;
+}
+
+.post-card-date {
+    color: #6c757d;
+}
+
+.post-category {
+    background: #007bff;
+    color: white;
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .tag-title {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .tag-section {
+        padding: 1.5rem;
+    }
+
+    .post-card-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
 }
 </style>
 

@@ -21,6 +21,11 @@ plugins:
   - jekyll-feed
   - jekyll-seo-tag
 
+# Tag settings
+tag_page_layout: tag
+tag_page_dir: tag
+tag_permalink_style: pretty
+
 # Custom Layout Settings (Beautiful Jekyll 관련 설정 제거)
 
 nav-links:
