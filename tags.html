@@ -10,118 +10,14 @@ permalink: /tags/
         <p class="page-subtitle">태그별로 정리된 포스트를 확인하세요</p>
     </header>
 
-    <div class="tags-list">
-        {% assign all_tags = site.posts | map: 'tags' | flatten | uniq | sort %}
-        {% for tag in all_tags %}
-            {% assign tag_posts = site.posts | where_exp: "post", "post.tags contains tag" %}
-            <section class="tag-section">
-                <h2 class="tag-title">
-                    <a href="{{ '/tags/' | append: tag | uri_escape | relative_url }}">{{ tag }}</a>
-                </h2>
-                <p class="tag-count">{{ tag_posts.size }}개의 포스트</p>
-                <ul class="tag-posts">
-                    {% for post in tag_posts limit: 3 %}
-                        <li class="tag-post-item">
-                            <a href="{{ post.url | relative_url }}" class="tag-post-link">
-                                <span class="tag-post-title">{{ post.title }}</span>
-                                <span class="tag-post-date">{{ post.date | date: "%Y-%m-%d" }}</span>
-                            </a>
-                        </li>
-                    {% endfor %}
-                </ul>
-                {% if tag_posts.size > 3 %}
-                    <a href="{{ '/tags/' | append: tag | uri_escape | relative_url }}" class="tag-more-link">더보기 →</a>
-                {% endif %}
-            </section>
-        {% endfor %}
-    </div>
+    <p>태그 기능은 현재 개발 중입니다. 곧 업데이트될 예정입니다.</p>
 </div>
 
 
 <style>
-.tags-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 2rem;
-}
-
-.tag-section {
-    background: #f8f9fa;
-    border-radius: 12px;
-    padding: 2rem;
-    border-left: 4px solid #28a745;
-}
-
-.tag-title {
-    font-size: 1.5rem;
-    margin-bottom: 0.5rem;
-}
-
-.tag-title a {
-    color: #3d4144;
-    text-decoration: none;
-    transition: color 0.2s;
-}
-
-.tag-title a:hover {
-    color: #28a745;
-}
-
-.tag-count {
-    color: #6c757d;
-    font-size: 0.9rem;
-    margin-bottom: 1rem;
-}
-
-.tag-posts {
-    list-style: none;
-    margin-bottom: 1rem;
-}
-
-.tag-post-item {
-    margin-bottom: 0.75rem;
-    padding-bottom: 0.75rem;
-    border-bottom: 1px solid #e9ecef;
-}
-
-.tag-post-item:last-child {
-    border-bottom: none;
-    margin-bottom: 0;
-    padding-bottom: 0;
-}
-
-.tag-post-link {
-    display: block;
-    text-decoration: none;
-    color: #495057;
-    transition: color 0.2s;
-}
-
-.tag-post-link:hover {
-    color: #28a745;
-}
-
-.tag-post-title {
-    display: block;
-    margin-bottom: 0.25rem;
-}
-
-.tag-post-date {
-    display: block;
-    font-size: 0.85rem;
-    color: #adb5bd;
-}
-
-.tag-more-link {
-    display: inline-block;
-    color: #28a745;
-    text-decoration: none;
-    font-size: 0.9rem;
-    transition: transform 0.2s;
-}
-
-.tag-more-link:hover {
-    transform: translateX(5px);
+.tags-page {
+    text-align: center;
+    padding: 2rem 0;
 }
 </style>
 
