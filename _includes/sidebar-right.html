@@ -27,7 +27,7 @@
     <section class="widget tags-widget">
         <h3 class="widget-title">인기 태그</h3>
         <div class="tag-cloud">
-            {% assign all_tags = site.posts | map: 'tags' | flatten | uniq | sort %}
+            {% assign all_tags = site.posts | map: 'tags' | flatten | compact | uniq | sort_natural %}
             {% for tag in all_tags limit: 20 %}
                 {% assign tag_posts = site.posts | where_exp: "post", "post.tags contains tag" %}
                 <a href="{{ '/tags/' | append: tag | relative_url }}" class="tag-cloud-item" data-count="{{ tag_posts.size }}">
@@ -50,7 +50,7 @@
                 <span class="stat-label">카테고리</span>
                 <span class="stat-value">{{ all_categories.size }}</span>
             </li>
-            {% assign all_tags = site.posts | map: 'tags' | flatten | uniq %}
+            {% assign all_tags = site.posts | map: 'tags' | flatten | compact | uniq %}
             <li class="stat-item">
                 <span class="stat-label">태그</span>
                 <span class="stat-value">{{ all_tags.size }}</span>
