@@ -134,7 +134,7 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault();
         const query = searchInput.value.trim();
         if (query) {
-            window.history.pushState({}, '', '/ait26/search/?q=' + encodeURIComponent(query));
+            window.history.pushState({}, '', '{{ "/search/" | relative_url }}?q=' + encodeURIComponent(query));
             performSearch(query);
         }
     });

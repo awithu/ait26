@@ -2,7 +2,7 @@
 title: "IT 블로그"
 description: "IT 기술과 개발에 관한 블로그"
 url: "https://awithu.github.io"
-baseurl: "/ait26"
+baseurl: ""
 
 # Author
 author: "AI 연구원"

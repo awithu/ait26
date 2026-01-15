@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             const query = searchInput.value.trim();
             if (query) {
-                window.location.href = '/ait26/search/?q=' + encodeURIComponent(query);
+                window.location.href = '/search/?q=' + encodeURIComponent(query);
             }
         });
     }
