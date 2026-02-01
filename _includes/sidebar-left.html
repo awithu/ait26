@@ -305,6 +305,11 @@
     </nav>
     
     <div class="sidebar-footer">
+        <div class="footer-links">
+            <a href="{{ '/about/' | relative_url }}" class="footer-link">About</a>
+            <span class="footer-separator">|</span>
+            <a href="{{ '/privacy/' | relative_url }}" class="footer-link">개인정보 처리방침</a>
+        </div>
         <p class="copyright">&copy; {{ 'now' | date: "%Y" }} {{ site.title }}</p>
     </div>
 </div>

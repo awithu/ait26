@@ -19,7 +19,7 @@ body {
 /* 컨테이너 래퍼 - 3컬럼 그리드 */
 .container-wrapper {
     display: grid;
-    grid-template-columns: 281px 1fr 300px;
+    grid-template-columns: 562px 1fr 300px;
     grid-template-areas: "sidebar-left main sidebar-right";
     gap: 2rem;
     max-width: 1600px;
@@ -342,6 +342,32 @@ body {
     margin-top: 2rem;
     padding-top: 1.5rem;
     border-top: 2px solid #f0f0f0;
+}
+
+.footer-links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.footer-link {
+    font-size: 0.8rem;
+    color: #6c757d;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.footer-link:hover {
+    color: #007bff;
+    text-decoration: underline;
+}
+
+.footer-separator {
+    color: #dee2e6;
+    font-size: 0.75rem;
 }
 
 .social-links {
@@ -893,7 +919,7 @@ body {
 /* 반응형 디자인 */
 @media (max-width: 1200px) {
     .container-wrapper {
-        grid-template-columns: 225px 1fr 250px;
+        grid-template-columns: 450px 1fr 250px;
         gap: 1.5rem;
         padding: 1.5rem;
     }
